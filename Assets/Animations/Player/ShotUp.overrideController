@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ShotUp
+  m_Controller: {fileID: 9100000, guid: 4b49b8a652827bb4b83a77d752e0e941, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 4a4f0790201771a4bba5145fdc87eb0b, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 2382aca2b126c8f4bab58f05a5acd3d5, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: f6f4f6db78250de41a244c881e40faf4, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 2382aca2b126c8f4bab58f05a5acd3d5, type: 2}
