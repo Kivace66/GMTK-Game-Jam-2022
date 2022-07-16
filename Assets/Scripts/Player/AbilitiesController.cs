@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AbilitiesController : MonoBehaviour
 {
-    public bool canDoubleJump { get; set; } = false;
+    public bool canDoubleJump { get; set; } = true;
     public bool canDash { get; set; } = true;
     public bool canBecomeBall { get; set; } = false;
     public bool canDropBomb { get; set; } = false;

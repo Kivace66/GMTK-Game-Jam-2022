@@ -20,7 +20,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _standDetectDistance = .2f;
     [SerializeField] float _ballSpeedMultiplier = .8f;
     [SerializeField] CircleCollider2D _ballCollider;
+    [SerializeField] float _coyoteTime = .3f;
 
+    private float _coyoteCounter;
     bool _resetJumpNeeded = false;
     PlayerAnimation _playerAnimation;
     FireController _fireController;
@@ -43,6 +45,7 @@ public class PlayerController : MonoBehaviour
         _abilitiesController = GetComponent<AbilitiesController>();
         _canInput = true;
         _canStand = true;
+        _coyoteCounter = _coyoteTime;
     }
 
     private void Update()
@@ -131,9 +134,24 @@ public class PlayerController : MonoBehaviour
         }
         _playerAnimation.Move(horizontal);
 
-        // Jump
         bool grounded = IsGrounded();
-        if (( (_abilitiesController.canDoubleJump && _canDoubleJump) || grounded) && Input.GetButtonDown("Jump"))
+        if (!grounded)
+        {
+            _coyoteCounter -= Time.deltaTime;
+            _playerAnimation.SetCoyote(true);
+        }
+        else
+        {
+            _coyoteCounter = _coyoteTime;
+            _playerAnimation.SetCoyote(false);
+        }
+//if (_coyoteCounter > 0)
+//{
+//    _canDoubleJump = false;
+//        }
+
+        // Jump
+        if (( (_abilitiesController.canDoubleJump && _canDoubleJump) || (_coyoteCounter>0)) && Input.GetButtonDown("Jump"))
         {
             if (_ball.activeSelf)
             {
@@ -144,18 +162,20 @@ public class PlayerController : MonoBehaviour
                 velocity.y = _jumpForce;
             }
 
-            _playerAnimation.Jump(!grounded);
-            if (grounded)
+            _playerAnimation.Jump(!grounded); 
+            //if (grounded)
+            if (grounded ||  _coyoteCounter > 0)
             {
+                _coyoteCounter = 0;
                 //StartCoroutine("ResetJump");
                 _canDoubleJump = true;
             }
             else
             {
+                _playerAnimation.SetCoyote(false);
                 _playerAnimation.DoubleJump();
                 _canDoubleJump = false;
             }
-            //_canDoubleJump = IsGround();
         }
 
         _rb.velocity = velocity;

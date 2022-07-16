@@ -29,6 +29,11 @@ public class PlayerAnimation : MonoBehaviour
         _currentAnimator.SetBool("jump", jump);
     }
 
+    public void SetCoyote(bool isCoyote)
+    {
+        _currentAnimator.SetBool("coyote", isCoyote);
+    }
+
     public void DoubleJump()
     {
         //if (_isBall) return;
