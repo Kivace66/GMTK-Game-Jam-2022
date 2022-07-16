@@ -11,16 +11,16 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Ground
+  - Shot
+  - Player
+  - NoCollision
+  - Destructible
+  - Pickup
+  - Enemy
+  - Trigger Zone
+  - Boss
+  - Boss Shot
   - 
   - 
   - 
