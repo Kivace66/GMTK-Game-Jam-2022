@@ -21,10 +21,22 @@ public class ChangeSizePill : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //TODO: Prompt to take pill
-            PlayerPillController controller = other.GetComponentInParent<PlayerPillController>();
-            controller.TakePill(gameObject, PlayerPillController.PillType.ChangeSize);
+            UIController.GetInstance().EnableInteractText();
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                PlayerPillController controller = other.GetComponentInParent<PlayerPillController>();
+                controller.TakePill(gameObject, PlayerPillController.PillType.ChangeSize);
+                Destroy(gameObject);
+            }
 
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            UIController.GetInstance().DisableInteractText();
         }
     }
 
