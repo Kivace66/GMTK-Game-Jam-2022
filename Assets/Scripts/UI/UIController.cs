@@ -58,6 +58,7 @@ public class UIController : MonoBehaviour
     {
         _healthBar.maxValue = maxHealth;
         _healthBar.value = currentHealth;
+        SetHealthBarLength(maxHealth);
     }
 
     public void SetHealthBarLength(int maxHealth)

@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour
     Animation _anim;
     private float _speedScale = 1;
     private float _jumpForceScale = 1;
+    private bool _invertedControl = false;
+    private bool _canStop = true;
 
     private void Start()
     {
@@ -48,6 +50,8 @@ public class PlayerController : MonoBehaviour
         _abilitiesController = GetComponent<AbilitiesController>();
         _canInput = true;
         _canStand = true;
+        _invertedControl = false;
+        _canStop = true;
         _coyoteCounter = _coyoteTime;
     }
 
@@ -61,7 +65,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        float horizontal = Input.GetAxisRaw("Horizontal");
+        float horizontal = Input.GetAxisRaw("Horizontal") * (_invertedControl? -1 : 1);
         if (horizontal < 0)
         {
             Flip(false);
@@ -126,14 +130,21 @@ public class PlayerController : MonoBehaviour
         /* dash */
 
         Vector2 velocity = _rb.velocity;
-        float horizontal = Input.GetAxisRaw("Horizontal");
+        float horizontal = Input.GetAxisRaw("Horizontal") * (_invertedControl ? -1 : 1);
         if (_ball.activeSelf)
         {
             velocity.x = horizontal * _moveSpeed * _ballSpeedMultiplier;
         }
         else
         {
-            velocity.x = horizontal * _moveSpeed * _speedScale;
+            if (_canStop)
+            {
+                velocity.x = horizontal * _moveSpeed * _speedScale;
+            }
+            else { 
+                if(horizontal != 0)
+                    velocity.x = horizontal * _moveSpeed * _speedScale;
+            }
         }
         _playerAnimation.Move(horizontal);
 
@@ -312,5 +323,15 @@ public class PlayerController : MonoBehaviour
     public void SetJumpForceScale(float scale)
     {
         _jumpForceScale = scale;
+    }
+
+    public void ToggleInvertControl()
+    {
+        _invertedControl = !_invertedControl;
+    }
+
+    public void ToggleCanStop()
+    {
+        _canStop = !_canStop;
     }
 }

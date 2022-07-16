@@ -20,6 +20,7 @@ public class FireController : MonoBehaviour
     Transform _whereToFire;
 
     AbilitiesController _abilitiesController;
+    private bool _canFire = true;
 
     public bool _isStanding { get; set; } = true;
 
@@ -49,6 +50,7 @@ public class FireController : MonoBehaviour
 
     private void Update()
     {
+        if (!_canFire) return;
         poolCount = _bulletPool.GetCount();
         DecideFirePosition();
         if (Input.GetKeyDown(KeyCode.J))
@@ -96,5 +98,17 @@ public class FireController : MonoBehaviour
         bullet.gameObject.SetActive(false);
         bullet.SetObjectPool(_bulletPool);
         return bullet;
+    }
+
+    public void DisableFire()
+    {
+        _canFire = false;
+
+    }
+
+    public void EnableFire()
+    {
+        _canFire = true;
+
     }
 }

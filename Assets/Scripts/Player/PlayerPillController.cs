@@ -21,6 +21,9 @@ public class PlayerPillController : MonoBehaviour
     private bool _canTakePill;
     private PlayerController _playerController;
     private bool _startEffect;
+    private Pill _currentPill;
+    private int _originMaxHealth;
+    private int _originCurrentHealth;
 
     private Action restoreState;
 
@@ -41,7 +44,7 @@ public class PlayerPillController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_startEffect)
+        if (_startEffect && !_canTakePill)
         {
             if (_effectCounter > 0)
             {
@@ -76,29 +79,14 @@ public class PlayerPillController : MonoBehaviour
         return _canTakePill;
     }
 
-    public void TakePill(GameObject pill, PillType type)
+    public void TakePill(Pill pill, PillType type)
     {
-        switch (type) {
-            case PillType.ChangeSize:
-                TakeChangeSizePill(pill.GetComponent<ChangeSizePill>());
-                break;
-            case PillType.Invincible:
-                break;
-            case PillType.ChangeSpeed:
-                break;
-        }
-    }
-
-    public void TakeChangeSizePill(ChangeSizePill pill)
-    {
+        _currentPill = pill;
+        _canTakePill = false;
         _duration = pill.duration;
         _effectCounter = _duration;
         _startFlashTime = pill.startFlashTime;
         _flashInterval = pill.flashInterval;
-        //_jumpForceScale = pill.targetJumpForceScale;
-        //_hpScale = pill.targetHPScale;
-        //_speedScale = pill.targetSpeedScale;
-
 
         foreach (SpriteRenderer sr in _playerSprites)
         {
@@ -106,18 +94,33 @@ public class PlayerPillController : MonoBehaviour
         }
         _flashCounter = pill.flashInterval;
 
-       Vector3 scale = gameObject.transform.localScale;
+        Vector3 scale = gameObject.transform.localScale;
         scale.x = pill.targetXScale;
         scale.y = pill.targetYScale;
         gameObject.transform.localScale = scale;
+        _originCurrentHealth = PlayerHealthController.GetInstance().GetCurrentHealth();
+        _originMaxHealth = PlayerHealthController.GetInstance().GetMaxHealth();
         _playerController.SetSpeedScale(pill.targetSpeedScale);
         _playerController.SetJumpForceScale(pill.targetJumpForceScale);
         PlayerHealthController.GetInstance().SetHealthScale(pill.targetHPScale);
         _startEffect = true;
-        restoreState = ResetSize;
+        restoreState = ResetState;
+
+        switch (_currentPill.type)
+        {
+            case PillType.Invincible:
+                _playerController.ToggleInvertControl();
+                break;
+            case PillType.ChangeSpeed:
+                if (!pill.canStop)
+                {
+                    _playerController.ToggleCanStop();
+                }
+                break;
+        }
     }
 
-    public void ResetSize()
+    public void ResetState()
     {
         Vector3 scale = gameObject.transform.localScale;
         scale.x = 1;
@@ -125,14 +128,29 @@ public class PlayerPillController : MonoBehaviour
         gameObject.transform.localScale = scale;
         _playerController.SetSpeedScale(1);
         _playerController.SetJumpForceScale(1);
-        PlayerHealthController.GetInstance().SetHealthScale(1);
+        PlayerHealthController.GetInstance().SetMaxHealth(_originMaxHealth);
+        PlayerHealthController.GetInstance().SetCurrentHealth(_originCurrentHealth);
         _startEffect = false;
+
 
         foreach (SpriteRenderer sr in _playerSprites)
         {
             sr.enabled = true;
             sr.color = new Color(255, 255, 255);
         }
-
+        _canTakePill = true;
+        switch (_currentPill.type)
+        {
+            case PillType.Invincible:
+                _playerController.ToggleInvertControl();
+                break;
+            case PillType.ChangeSpeed:
+                if (!_currentPill.canStop)
+                {
+                    _playerController.ToggleCanStop();
+                }
+                break;
+        }
     }
+
 }

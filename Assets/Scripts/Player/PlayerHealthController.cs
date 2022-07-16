@@ -40,6 +40,7 @@ public class PlayerHealthController : MonoBehaviour
 
     private void Update()
     {
+        UpdateHealthUI();
         if (_invincibleFlash)
         {
             if (_invincCounter > 0)
@@ -103,7 +104,7 @@ public class PlayerHealthController : MonoBehaviour
     {
         _maxHealth = Mathf.RoundToInt(_maxHealth * scale);
         _currentHealth = Mathf.RoundToInt(_currentHealth * scale);
-
+        UpdateHealthUI();
     }
 
     public static PlayerHealthController GetInstance()
@@ -114,5 +115,24 @@ public class PlayerHealthController : MonoBehaviour
     private void UpdateHealthUI()
     {
         UIController.GetInstance().UpdateHealthBar(_currentHealth, _maxHealth);
+    }
+
+    public int GetCurrentHealth()
+    {
+        return _currentHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return _maxHealth;
+    }
+
+    public void SetMaxHealth(int maxHealth)
+    {
+        _maxHealth = maxHealth;
+    }
+    public void SetCurrentHealth(int currentHealth)
+    {
+        _currentHealth = currentHealth;
     }
 }
