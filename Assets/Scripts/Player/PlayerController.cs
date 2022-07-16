@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _jumpForce;
     [SerializeField] Rigidbody2D _rb;
     [SerializeField] SpriteRenderer _playerSprite;
+    [SerializeField] Transform _groundDetectStartPosition;
     [SerializeField] float _groundDetectDistance = .7f;
     [SerializeField] LayerMask _groundLayer;
     [SerializeField] CapsuleCollider2D _collider;
@@ -35,6 +36,8 @@ public class PlayerController : MonoBehaviour
     AbilitiesController _abilitiesController;
     bool _canInput;
     Animation _anim;
+    private float _speedScale = 1;
+    private float _jumpForceScale = 1;
 
     private void Start()
     {
@@ -130,7 +133,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            velocity.x = horizontal * _moveSpeed;
+            velocity.x = horizontal * _moveSpeed * _speedScale;
         }
         _playerAnimation.Move(horizontal);
 
@@ -209,8 +212,8 @@ public class PlayerController : MonoBehaviour
     {
         //playerSprite.flipX = !facingRight;
         Vector3 scale = transform.localScale;
-        if (!facingRight) scale.x = -1;
-        else scale.x = 1;
+        if (!facingRight) scale.x = System.Math.Abs(scale.x) * -1;
+        else scale.x = System.Math.Abs(scale.x);
 
         transform.localScale = scale;
     }
@@ -223,9 +226,9 @@ public class PlayerController : MonoBehaviour
         Vector2 middle = transform.position;
         Vector2 left = transform.position;
         Vector2 right = transform.position;
-        middle.y -= _collider.size.y / 2;
-        left.y -= _collider.size.y / 2;
-        right.y -= _collider.size.y / 2;
+        middle.y = _groundDetectStartPosition .position.y;
+        left.y = _groundDetectStartPosition.position.y;
+        right.y = _groundDetectStartPosition.position.y;
         left.x += _collider.size.x / 2;
         right.x -= _collider.size.x / 2f;
         hitMiddle = Physics2D.Raycast(middle, Vector2.down, _groundDetectDistance, _groundLayer);
@@ -300,5 +303,14 @@ public class PlayerController : MonoBehaviour
     public bool CanPlayerInput()
     {
         return _canInput;
+    }
+
+    public void SetSpeedScale(float scale)
+    {
+        _speedScale = scale;
+    }
+    public void SetJumpForceScale(float scale)
+    {
+        _jumpForceScale = scale;
     }
 }

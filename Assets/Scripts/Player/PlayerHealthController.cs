@@ -11,6 +11,7 @@ public class PlayerHealthController : MonoBehaviour
     [SerializeField] float _flashLength;
     [SerializeField] SpriteRenderer[] _playerSprites;
 
+    bool _invincibleFlash;
     float _invincCounter;
     float _flashCounter;
     int _currentHealth;
@@ -34,29 +35,34 @@ public class PlayerHealthController : MonoBehaviour
         _currentHealth = _maxHealth;
         UpdateHealthUI();
         UIController.GetInstance().SetHealthBarLength(_maxHealth);
+        _invincibleFlash = false;
     }
 
     private void Update()
     {
-        if(_invincCounter > 0)
+        if (_invincibleFlash)
         {
-            _invincCounter -= Time.deltaTime;
+            if (_invincCounter > 0)
+            {
+                _invincCounter -= Time.deltaTime;
 
-            _flashCounter -= Time.deltaTime;
-            if(_flashCounter <= 0)
-            {
-                foreach(SpriteRenderer sr in _playerSprites)
+                _flashCounter -= Time.deltaTime;
+                if (_flashCounter <= 0)
                 {
-                    sr.enabled = !sr.enabled;
+                    foreach (SpriteRenderer sr in _playerSprites)
+                    {
+                        sr.enabled = !sr.enabled;
+                    }
+                    _flashCounter = _flashLength;
                 }
-                _flashCounter = _flashLength;
             }
-        }
-        else
-        {
-            foreach (SpriteRenderer sr in _playerSprites)
+            else
             {
-                sr.enabled = true;
+                foreach (SpriteRenderer sr in _playerSprites)
+                {
+                    sr.enabled = true;
+                }
+                _invincibleFlash = false;
             }
         }
     }
@@ -74,6 +80,7 @@ public class PlayerHealthController : MonoBehaviour
         }
         else
         {
+            _invincibleFlash = true;
             _invincCounter = _invincibilityLength;
         }
     }
@@ -90,6 +97,13 @@ public class PlayerHealthController : MonoBehaviour
         _currentHealth = _maxHealth;
         UpdateHealthUI();
         UIController.GetInstance().SetHealthBarLength(_maxHealth);
+    }
+
+    public void SetHealthScale(float scale)
+    {
+        _maxHealth = Mathf.RoundToInt(_maxHealth * scale);
+        _currentHealth = Mathf.RoundToInt(_currentHealth * scale);
+
     }
 
     public static PlayerHealthController GetInstance()
