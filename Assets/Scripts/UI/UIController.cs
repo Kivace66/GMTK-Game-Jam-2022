@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +10,7 @@ public class UIController : MonoBehaviour
     [SerializeField] Slider _healthBar;
     [SerializeField] Image _fadeScreen;
     [SerializeField] float _fadeSpeed;
+    [SerializeField] TextMeshProUGUI _interactText;
 
     private static UIController _instance;
 
@@ -25,6 +28,8 @@ public class UIController : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+
     private void Update()
     {
         if (_fadingToBlack)
@@ -73,5 +78,13 @@ public class UIController : MonoBehaviour
         _fadingToBlack = false;
         _fadingFromBlack = true;
 
+    }
+    public void EnableInteractText()
+    {
+        _interactText.gameObject.SetActive(true);
+    }
+    public void DisableInteractText()
+    {
+        _interactText.gameObject.SetActive(false);
     }
 }

@@ -17,18 +17,29 @@ public class ChangeSizePill : MonoBehaviour
     private float _flashCounter;
     private float _effectCounter;
 
+    private bool _interactable;
+    private PlayerPillController _playerPillController;
+
+    private void Update()
+    {
+        if (_interactable)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                _playerPillController.TakePill(gameObject, PlayerPillController.PillType.ChangeSize);
+                Destroy(gameObject);
+            }
+
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
+            _playerPillController = other.GetComponentInParent<PlayerPillController>();
             UIController.GetInstance().EnableInteractText();
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                PlayerPillController controller = other.GetComponentInParent<PlayerPillController>();
-                controller.TakePill(gameObject, PlayerPillController.PillType.ChangeSize);
-                Destroy(gameObject);
-            }
-
+            _interactable = true;
         }
     }
 
@@ -36,7 +47,9 @@ public class ChangeSizePill : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            _playerPillController = null;
             UIController.GetInstance().DisableInteractText();
+            _interactable = false;
         }
     }
 
