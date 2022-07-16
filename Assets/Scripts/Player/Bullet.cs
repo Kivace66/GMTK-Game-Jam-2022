@@ -70,6 +70,10 @@ public class Bullet : MonoBehaviour
         {
             other.GetComponent<EnemyHealthController>()?.Damage(_damageAmount);
         }
+        if (other.tag == "Boss")
+        {
+            other.GetComponentInParent<BossHealthController>().TakeDamage(_damageAmount);
+        }
         _pool.Enqueue(this);
         gameObject.SetActive(false);
         if (_impactEffect != null)
